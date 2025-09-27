@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timer Iscrizioni</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      background: #222 url('logo.jpg') no-repeat center/cover;
+      color: white;
+      margin: 0;
+    }
+    h1 { 
+      margin-bottom: 20px; 
+      text-shadow: 2px 2px 4px #000;
+      font-size: clamp(1.5rem, 4vw, 3rem); /* dinamico */
+    }
+    p { 
+      margin-bottom: 20px; 
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      text-shadow: 1px 1px 3px #000;
+    }
+    #timer {
+      font-size: clamp(2rem, 8vw, 4rem); /* scala in base alla larghezza */
+      font-weight: bold;
+      text-shadow: 2px 2px 4px #000;
+      transition: color 0.3s ease;
+    }
+    #warning {
+      margin-top: 15px;
+      font-size: clamp(1.2rem, 3.5vw, 2rem);
+      font-weight: bold;
+      color: #ff1744;
+      display: none; 
+      text-shadow: 1px 1px 3px #000;
+    }
+    /* Optional: aggiusta padding per schermi molto piccoli */
+    @media (max-width: 400px) {
+      body {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Iscrizioni Montebelluna</h1>
+  <p>Le iscrizioni chiudono tra:</p>
+  <div id="timer" aria-live="polite">--:--:--</div>
+  <div id="warning">Affrettati a rispondere!</div>
+
+  <script>
+    const closingDate = new Date(2025, 9, 6, 19, 0, 0); // 6 ottobre 2025, ore 19:00
+    const timerEl = document.getElementById('timer');
+    const warningEl = document.getElementById('warning');
+
+    function updateTimer() {
+      const now = new Date();
+      const diff = closingDate - now;
+
+      if (diff <= 0) {
+        timerEl.innerHTML = "Iscrizioni chiuse!";
+        warningEl.style.display = "none";
+        clearInterval(interval);
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      if (days > 0) {
+        timerEl.innerHTML = 
+          `${days}g ${hours.toString().padStart(2,'0')}h : ${minutes.toString().padStart(2,'0')}m : ${seconds.toString().padStart(2,'0')}s`;
+      } else {
+        timerEl.innerHTML = 
+          `${hours.toString().padStart(2,'0')}h : ${minutes.toString().padStart(2,'0')}m : ${seconds.toString().padStart(2,'0')}s`;
+      }
+
+      if (days < 3) {
+        timerEl.style.color = "#ff1744"; 
+        warningEl.style.display = "block";
+      } else {
+        timerEl.style.color = "white";
+        warningEl.style.display = "none";
+      }
+    }
+
+    const interval = setInterval(updateTimer, 1000);
+    updateTimer();
+  </script>
+
+</body>
+</html>
